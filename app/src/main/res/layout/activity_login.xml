@@ -69,11 +69,11 @@
                     android:layout_marginTop="@dimen/loginViewsMargin">
 
                     <EditText
-                        android:id="@+id/editTextEmail"
+                        android:id="@+id/userName"
                         style="@style/modifiedEditText"
-                        android:hint="@string/login_email_hint"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1" />
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:hint="Username"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -82,7 +82,7 @@
                     android:layout_marginTop="@dimen/loginViewsMargin">
 
                     <EditText
-                        android:id="@+id/editTextPassword"
+                        android:id="@+id/password"
                         style="@style/modifiedEditText"
                         android:hint="@string/login_password_hint"
                         android:inputType="textPassword"
@@ -95,6 +95,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/loginViewsMargin"
                     android:text="Login"
+                    android:onClick="login"
                     app:iconTint="#FFFFFF" />
 
                 <TextView
