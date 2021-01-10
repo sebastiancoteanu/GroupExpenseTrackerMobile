@@ -25,6 +25,8 @@
 
         </LinearLayout>
 
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -95,7 +97,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/loginViewsMargin"
                     android:text="Login"
-                    android:onClick="login"
+                    android:onClick="onLogin"
                     app:iconTint="#FFFFFF" />
 
                 <TextView
@@ -109,9 +111,21 @@
                     android:textStyle="bold" />
 
 
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <ProgressBar
+            android:id="@+id/loginProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="3"
+            android:indeterminateDrawable="@drawable/progress"
+            android:visibility="gone"/>
+
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

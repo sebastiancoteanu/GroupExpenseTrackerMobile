@@ -1,15 +1,11 @@
 package com.example.groupexpensetrackermobile.utilities;
 
-import android.content.Context;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,13 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpUtils {
-    public static final HttpUtils INSTANCE = new HttpUtils();
+    private static final HttpUtils INSTANCE = new HttpUtils();
 
     private HttpUtils() {
     }
 
+    public static HttpUtils getInstance() {
+        return INSTANCE;
+    }
+
+
     public JsonObjectRequest getCustomJsonObjectRequest(int method, String url, JSONObject postData,
-                Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+                                                        Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener, String token) {
         return new JsonObjectRequest(method, url, postData, responseListener, errorListener) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
@@ -51,6 +52,9 @@ public class HttpUtils {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                if(token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };
