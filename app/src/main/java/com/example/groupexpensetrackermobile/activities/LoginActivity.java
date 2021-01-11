@@ -1,4 +1,4 @@
-package com.example.groupexpensetrackermobile;
+package com.example.groupexpensetrackermobile.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,19 +8,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.example.groupexpensetrackermobile.utilities.ToastHelper;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.os.UserManager;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;

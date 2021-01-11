@@ -11,14 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GroupExpenseTrackerMobile">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
-        <activity android:name=".MainActivity" android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar">
+        <activity android:name=".activities.MainActivity" android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

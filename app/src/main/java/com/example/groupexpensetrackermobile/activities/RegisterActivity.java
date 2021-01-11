@@ -1,4 +1,4 @@
-package com.example.groupexpensetrackermobile;
+package com.example.groupexpensetrackermobile.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.example.groupexpensetrackermobile.utilities.ToastHelper;
