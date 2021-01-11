@@ -14,10 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
+        android:paddingBottom="10dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        android:paddingTop="15dp">
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvTitle"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="5dp"
             android:text="20-ian-2020"
             android:textColor="#01579B"
             android:textSize="13sp" />
