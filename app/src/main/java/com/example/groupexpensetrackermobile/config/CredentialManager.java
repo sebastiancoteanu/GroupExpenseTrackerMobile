@@ -18,6 +18,16 @@ public class CredentialManager {
         return INSTANCE;
     }
 
+    public boolean storeAppUserData(JSONObject jsonObject) {
+        try {
+            this.currentUser.setAppUserId(jsonObject.getLong("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public boolean storeUser(JSONObject userJson) {
         if(currentToken == null) {
             System.err.println("Token should have been fetched until this point.");

@@ -79,7 +79,6 @@
             android:background="@null">
 
         </androidx.recyclerview.widget.RecyclerView>
-
     </LinearLayout>
 
     <LinearLayout
@@ -93,7 +92,7 @@
         android:weightSum="12">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/previousPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -115,7 +114,7 @@
             android:textSize="22sp" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/nextPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -123,5 +122,23 @@
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_right" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/mainProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:translationY="150dp"
+            android:indeterminateDrawable="@drawable/progress"
+            android:translationZ="12dp"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

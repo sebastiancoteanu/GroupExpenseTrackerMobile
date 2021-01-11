@@ -58,4 +58,5 @@ public class Trip {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
 }

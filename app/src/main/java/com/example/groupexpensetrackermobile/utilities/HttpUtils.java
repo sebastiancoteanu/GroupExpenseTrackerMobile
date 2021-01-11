@@ -5,8 +5,10 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,5 +62,19 @@ public class HttpUtils {
         };
     }
 
+    public JsonArrayRequest getCustomJsonArrayRequest(int method, String url, JSONArray postData,
+                                                      Response.Listener<JSONArray> responseListener, Response.ErrorListener errorListener, String token) {
+        return new JsonArrayRequest(method, url, postData, responseListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                if(token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+    }
 
 }

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 public class User {
 
     private long id;
+    private long appUserId;
     private String login;
     private String firstName;
     private String lastName;
@@ -13,12 +14,21 @@ public class User {
 
     private User() {};
 
-    public User(long id, String login, String firstName, String lastName, String email) {
+    public User(long id, long appUserId, String login, String firstName, String lastName, String email) {
         this.id = id;
         this.login = login;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.appUserId = appUserId;
+    }
+
+    public long getAppUserId() {
+        return appUserId;
+    }
+
+    public void setAppUserId(long appUserId) {
+        this.appUserId = appUserId;
     }
 
     public long getId() {
@@ -74,5 +84,17 @@ public class User {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", appUserId=" + appUserId +
+                ", login='" + login + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

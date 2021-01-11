@@ -10,6 +10,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
+import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.example.groupexpensetrackermobile.utilities.ToastHelper;
@@ -66,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
             boolean status = CredentialManager.getInstance().storeToken(response);
             if(status) {
-                JsonObjectRequest fetchAccountDetails = makeFetchAccountDetailsLoginRequest(v);
+                JsonObjectRequest fetchAccountDetails = makeFetchAccountDetailsLoginRequest(v, queue);
                 queue.add(fetchAccountDetails);
             } else {
                 enableInputControls();
@@ -93,17 +94,16 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
-    private JsonObjectRequest makeFetchAccountDetailsLoginRequest(View v) {
+    private JsonObjectRequest makeFetchAccountDetailsLoginRequest(View v, RequestQueue requestQueue) {
         Response.Listener<JSONObject> fetchAccountDetailsResponseListener = response -> {
             System.out.println("Account details successful fetched -> " + response.toString());
             boolean status = CredentialManager.getInstance().storeUser(response);
-            enableInputControls();
 
             if(status) {
-                goToHome(v);
-                String firstName = CredentialManager.getInstance().getCurrentUser().getFirstName();
-                ToastHelper.getInstance().getSuccessfulMessageToast(v.getContext(), "Welcome + " + firstName + "!", Toast.LENGTH_SHORT).show();
+                JsonObjectRequest fetchAppUserData = makeFetchAppUserData(v);
+                requestQueue.add(fetchAppUserData);
             } else {
+                enableInputControls();
                 ToastHelper.getInstance().getErrorMessageToast(v.getContext(), "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
             }
 
@@ -121,6 +121,42 @@ public class LoginActivity extends AppCompatActivity {
                 null,
                 fetchAccountDetailsResponseListener,
                 fetchAccountDetailsErrorListener,
+                CredentialManager.getInstance().getCurrentToken()
+        );
+    }
+
+    private JsonObjectRequest makeFetchAppUserData(View v) {
+
+        User currentUser = CredentialManager.getInstance().getCurrentUser();
+        long userId = currentUser.getId();
+
+        Response.Listener<JSONObject> fetchAppUserDataResponseListener = response -> {
+            System.out.println("App user data successful fetched -> " + response.toString());
+            boolean status = CredentialManager.getInstance().storeAppUserData(response);
+            enableInputControls();
+
+            if(status) {
+                goToHome(v);
+                String firstName = CredentialManager.getInstance().getCurrentUser().getFirstName();
+                ToastHelper.getInstance().getSuccessfulMessageToast(v.getContext(), "Welcome + " + firstName + "!", Toast.LENGTH_SHORT).show();
+            } else {
+                ToastHelper.getInstance().getErrorMessageToast(v.getContext(), "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
+            }
+
+        };
+
+        Response.ErrorListener fetchAppUserDataDetailsErrorListener =  error -> {
+            error.printStackTrace();
+            enableInputControls();
+            ToastHelper.getInstance().getErrorMessageToast(v.getContext(), "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
+        };
+
+        return HttpUtils.getInstance().getCustomJsonObjectRequest(
+                Request.Method.GET,
+                Constants.API_URL + "app-users/user/" + userId,
+                null,
+                fetchAppUserDataResponseListener,
+                fetchAppUserDataDetailsErrorListener,
                 CredentialManager.getInstance().getCurrentToken()
         );
     }
