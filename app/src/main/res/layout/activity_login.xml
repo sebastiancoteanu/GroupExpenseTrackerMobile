@@ -42,7 +42,7 @@
             style="@style/headerText"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:text="GroupExpense Tracker" />
+            android:text="Group Expense Tracker" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/radius"

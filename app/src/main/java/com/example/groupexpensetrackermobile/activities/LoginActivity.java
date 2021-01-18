@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.User;
+import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.example.groupexpensetrackermobile.utilities.ToastHelper;
@@ -58,8 +59,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-
         // Listeners for authenticating and fetching the jwt token
         // If this auth request is successful, then we should fetch the account details
         Response.Listener<JSONObject> responseListener = response -> {
@@ -67,8 +66,8 @@ public class LoginActivity extends AppCompatActivity {
 
             boolean status = CredentialManager.getInstance().storeToken(response);
             if(status) {
-                JsonObjectRequest fetchAccountDetails = makeFetchAccountDetailsLoginRequest(v, queue);
-                queue.add(fetchAccountDetails);
+                JsonObjectRequest fetchAccountDetails = makeFetchAccountDetailsLoginRequest(v);
+                RequestService.getInstance().addRequest(fetchAccountDetails);
             } else {
                 enableInputControls();
                 ToastHelper.getInstance().getErrorMessageToast(v.getContext(), "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
@@ -91,17 +90,17 @@ public class LoginActivity extends AppCompatActivity {
      null
         );
 
-        queue.add(jsonObjectRequest);
+        RequestService.getInstance().addRequest(jsonObjectRequest);
     }
 
-    private JsonObjectRequest makeFetchAccountDetailsLoginRequest(View v, RequestQueue requestQueue) {
+    private JsonObjectRequest makeFetchAccountDetailsLoginRequest(View v) {
         Response.Listener<JSONObject> fetchAccountDetailsResponseListener = response -> {
             System.out.println("Account details successful fetched -> " + response.toString());
             boolean status = CredentialManager.getInstance().storeUser(response);
 
             if(status) {
                 JsonObjectRequest fetchAppUserData = makeFetchAppUserData(v);
-                requestQueue.add(fetchAppUserData);
+                RequestService.getInstance().addRequest(fetchAppUserData);
             } else {
                 enableInputControls();
                 ToastHelper.getInstance().getErrorMessageToast(v.getContext(), "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();

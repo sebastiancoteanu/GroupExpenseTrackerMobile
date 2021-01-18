@@ -9,11 +9,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.example.groupexpensetrackermobile.utilities.ToastHelper;
@@ -43,8 +43,6 @@ public class RegisterActivity extends AppCompatActivity {
         EditText lastNameEdit = findViewById(R.id.lastName);
         EditText emailEdit = findViewById(R.id.email);
         EditText passwordEdit = findViewById(R.id.password);
-
-        RequestQueue queue = Volley.newRequestQueue(this);
 
         JSONObject postData = new JSONObject();
 
@@ -82,8 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
             errorListener,
             null
         );
-
-        queue.add(jsonObjectRequest);
+        RequestService.getInstance().addRequest(jsonObjectRequest);
     }
 
     private void disableInputControls() {
