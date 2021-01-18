@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
             if(status) {
                 goToHome(v);
                 String firstName = CredentialManager.getInstance().getCurrentUser().getFirstName();
-                ToastHelper.getInstance().getSuccessfulMessageToast(v.getContext(), "Welcome + " + firstName + "!", Toast.LENGTH_SHORT).show();
+//                ToastHelper.getInstance().getSuccessfulMessageToast(v.getContext(), "Welcome + " + firstName + "!", Toast.LENGTH_SHORT).show();
             } else {
                 ToastHelper.getInstance().getErrorMessageToast(v.getContext(), "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
             }

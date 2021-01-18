@@ -10,6 +10,7 @@ public class Trip {
     private String description;
     private LocalDate createdAt;
     private BigDecimal balance;
+    private long createdById;
 
     public Trip(long id, String title, String description, LocalDate createdAt, BigDecimal balance) {
         this.id = id;
@@ -17,6 +18,14 @@ public class Trip {
         this.description = description;
         this.createdAt = createdAt;
         this.balance = balance;
+    }
+
+    public long getCreatedById() {
+        return createdById;
+    }
+
+    public void setCreatedById(long createdById) {
+        this.createdById = createdById;
     }
 
     public long getId() {

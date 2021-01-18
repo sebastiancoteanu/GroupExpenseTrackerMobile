@@ -11,6 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GroupExpenseTrackerMobile">
         <activity
+            android:name=".activities.CreateTrip"
+            android:label="@string/register"
+            android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
+        <activity
             android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />

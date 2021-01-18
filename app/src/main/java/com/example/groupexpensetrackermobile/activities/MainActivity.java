@@ -45,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RequestService.getInstance().setContext(this);
 
+        // test
+//        Intent createTripIntent = new Intent(this, CreateTrip.class);
+//        startActivity(createTripIntent);
+
         boolean isLogged = CredentialManager.getInstance().getCurrentUser() != null;
 
         if (!isLogged) {
@@ -196,5 +200,10 @@ public class MainActivity extends AppCompatActivity {
         nextPage.setEnabled(true);
 
         progressBar.setVisibility(View.GONE);
+    }
+
+    public void goToCreateTrip(View v) {
+        Intent intent = new Intent(this, CreateTrip.class);
+        startActivity(intent);
     }
 }

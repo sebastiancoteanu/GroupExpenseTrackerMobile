@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,11 +9,12 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:weightSum="12">
 
         <LinearLayout
+            android:id="@+id/topHeader"
             style="@style/parent"
             android:layout_weight="3"
             android:background="@drawable/login_shape_bk"
@@ -26,8 +27,20 @@
                 android:contentDescription="login background" />
 
         </LinearLayout>
-
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="create trip"
+        app:layout_anchor="@id/topHeader"
+        app:backgroundTint="@color/white"
+        app:tint="@color/colorAccent"
+        android:onClick="goToCreateTrip"
+        app:layout_anchorGravity="bottom|right|end"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -50,13 +63,13 @@
     <LinearLayout
         android:id="@+id/mainLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="100dp"
         android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp">
+        android:layout_marginBottom="100dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView"
@@ -67,6 +80,12 @@
             android:layout_marginTop="20dp"
             android:text="Trips"
             android:textSize="30sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tripRecyclerView"
@@ -75,11 +94,10 @@
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="10dp"
-            android:scrollbars="vertical"
-            android:background="@null">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            android:background="@null"
+            android:scrollbars="vertical" />
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -141,4 +159,4 @@
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
