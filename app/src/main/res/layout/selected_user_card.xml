@@ -15,15 +15,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="10dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        android:paddingTop="10dp">
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/tvFirstNameLastName"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="25dp"
             android:gravity="center_vertical"
             android:text="Trip 2020"
             android:textColor="#01579B"
@@ -31,25 +31,23 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvTitle"
+            android:layout_below="@id/tvFirstNameLastName"
             android:layout_marginTop="5dp"
             android:text="20-ian-2020"
             android:textColor="#01579B"
             android:textSize="13sp" />
 
-        <TextView
-            android:id="@+id/tvBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/btnRemoveButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="+45$"
-            android:textColor="@android:color/holo_green_dark"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:background="@drawable/ic_remove"
+            android:tooltipText="Remove"/>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

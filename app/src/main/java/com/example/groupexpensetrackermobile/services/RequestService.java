@@ -17,9 +17,6 @@ public class RequestService {
     };
 
     public void setContext(Context context) {
-        if(context != null) {
-            throw new RuntimeException("Context already initialized.");
-        }
         this.context = context;
         queue = Volley.newRequestQueue(context);
     }
