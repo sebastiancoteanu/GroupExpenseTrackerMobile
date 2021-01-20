@@ -19,10 +19,15 @@ public class TripAdapter extends RecyclerView.Adapter<TripHolder> {
     // List to store all the contact details
     private List<Trip> tripList;
     private Context mContext;
+    public static final int MAX_PAGE_SIZE = 4;
 
     public TripAdapter(List<Trip> contactsList, Context context) {
         this.tripList = contactsList;
         this.mContext = context;
+    }
+
+    public void setTripList(List<Trip> tripList) {
+        this.tripList = tripList;
     }
 
     @NonNull
@@ -44,7 +49,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripHolder> {
         holder.setBalance(contact.getBalance());
         holder.setCreatedDate(contact.getCreatedAt());
 
-        // You can set click listners to indvidual items in the viewholder here
+        // You can set click listeners to indvidual items in the viewholder here
         // make sure you pass down the listner or make the Data members of the viewHolder public
     }
 

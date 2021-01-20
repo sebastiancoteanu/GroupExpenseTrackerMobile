@@ -9,35 +9,39 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.User;
-import com.example.groupexpensetrackermobile.viewholder.SelectedTripUserHolder;
-import com.example.groupexpensetrackermobile.viewholder.TripHolder;
+import com.example.groupexpensetrackermobile.viewholder.SelectedUserHolder;
 
 import java.util.List;
 
-public class SelectedTripUserAdapter extends RecyclerView.Adapter<SelectedTripUserHolder> {
+public class SelectedTripUserAdapter extends RecyclerView.Adapter<SelectedUserHolder> {
 
     // List to store all the contact details
-    private List<User> userList;
+    private List<SelectableUser> userList;
     private Context mContext;
 
-    public SelectedTripUserAdapter(List<User> contactsList, Context context) {
+    public SelectedTripUserAdapter(List<SelectableUser> contactsList, Context context) {
         this.userList = contactsList;
         this.mContext = context;
     }
 
+    public void setUserList(List<SelectableUser> userList) {
+        this.userList = userList;
+    }
+
     @NonNull
     @Override
-    public SelectedTripUserHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SelectedUserHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the layout view you have created for the list rows here
         View view = layoutInflater.inflate(R.layout.selected_user_card, parent, false);
-        return new SelectedTripUserHolder(view);
+        return new SelectedUserHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SelectedTripUserHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SelectedUserHolder holder, int position) {
         final User user = userList.get(position);
 
         // Set the data to the views here
@@ -47,6 +51,8 @@ public class SelectedTripUserAdapter extends RecyclerView.Adapter<SelectedTripUs
         holder.getRemoveItemButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SelectableUser su = userList.get(position);
+                su.setSelected(false);
                 userList.remove(position);
                 SelectedTripUserAdapter.this.notifyDataSetChanged();
             }

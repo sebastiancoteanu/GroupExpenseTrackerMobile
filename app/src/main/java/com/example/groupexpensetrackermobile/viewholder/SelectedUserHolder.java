@@ -13,9 +13,9 @@ import com.example.groupexpensetrackermobile.entities.User;
 
 import java.util.List;
 
-public class SelectedTripUserHolder extends RecyclerView.ViewHolder {
+public class SelectedUserHolder extends RecyclerView.ViewHolder {
 
-    public SelectedTripUserHolder(@NonNull View itemView) {
+    public SelectedUserHolder(@NonNull View itemView) {
         super(itemView);
 
         firstNameLastName = itemView.findViewById(R.id.tvFirstNameLastName);

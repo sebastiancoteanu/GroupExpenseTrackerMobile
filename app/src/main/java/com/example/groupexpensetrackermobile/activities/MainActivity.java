@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private TripAdapter listAdapter;
     private RecyclerView tripRecyclerView;
     private List<Trip> tripList = new ArrayList<>();
+
+    private int currentPage;
+    private int numberOfPages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +82,11 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("User trips fetched successful. -> " + response.length() + " trips");
             }
             tripList = parseUserTrips(response);
+            numberOfPages = tripList.size() / TripAdapter.MAX_PAGE_SIZE + (tripList.size() % TripAdapter.MAX_PAGE_SIZE == 0 ? 0 : 1);
+            System.out.println("Total number of pages is " + numberOfPages);
             listAdapter = new TripAdapter(tripList, this);
             tripRecyclerView.setAdapter(listAdapter);
-            listAdapter.notifyDataSetChanged();
+            updateRecycleViewPage(1);
             enableInputControls();
         };
 
@@ -91,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         JsonArrayRequest jsonArrayRequest = HttpUtils.getInstance().getCustomJsonArrayRequest(
                 Request.Method.GET,
-                Constants.API_URL + "trips?createdById.equals=" + CredentialManager.getInstance().getCurrentUser().getAppUserId(),
+                Constants.API_URL + "custom/trips/participant/" + CredentialManager.getInstance().getCurrentUser().getAppUserId(),
                 null,
                 responseListener,
                 errorListener,
@@ -99,6 +105,49 @@ public class MainActivity extends AppCompatActivity {
         );
 
         RequestService.getInstance().addRequest(jsonArrayRequest);
+    }
+
+    public void onPreviousPageButtonClick(View v) {
+        if(currentPage > 1) {
+            updateRecycleViewPage(currentPage - 1);
+        }
+    }
+
+    public void onNextPageButtonClick(View v) {
+        if(currentPage < numberOfPages) {
+            updateRecycleViewPage(currentPage + 1);
+        }
+    }
+
+    private void updateRecycleViewPage(int newCurrentPage) {
+        if(newCurrentPage >= 1 && newCurrentPage <= this.numberOfPages) {
+
+            System.out.println("Updating recycle view. New page: " + newCurrentPage);
+
+            List<Trip> pageSection = tripList.subList(
+                    TripAdapter.MAX_PAGE_SIZE * (newCurrentPage - 1),
+                    Math.min(tripList.size(), TripAdapter.MAX_PAGE_SIZE * newCurrentPage));
+            listAdapter.setTripList(pageSection);
+            listAdapter.notifyDataSetChanged();
+
+            currentPage = newCurrentPage;
+            TextView paginationInfo = findViewById(R.id.paginationInfo);
+            paginationInfo.setText(currentPage + " / " + numberOfPages);
+
+            View previousPage = findViewById(R.id.previousPage);
+            View nextPage = findViewById(R.id.nextPage);
+            if(currentPage == 1) {
+                previousPage.setClickable(false);
+            } else {
+                previousPage.setClickable(true);
+            }
+
+            if(currentPage == numberOfPages) {
+                nextPage.setClickable(false);
+            } else {
+                nextPage.setClickable(true);
+            }
+        }
     }
 
     private void initializeBottomNavigationBar() {

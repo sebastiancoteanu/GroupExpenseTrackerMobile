@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/alertSearchEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints="Minimum 3 characters..."
+        android:background="@drawable/default_border"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:hint="Minimum 3 characters..."
+        android:inputType="text"
+        android:padding="5dp">
+
+        <requestFocus />
+    </EditText>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/alertSearchRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="200dp"
+            android:layout_marginTop="5dp"
+            android:cacheColorHint="@null"
+            android:fadeScrollbars="true"
+            android:fastScrollEnabled="true"
+            android:textFilterEnabled="true" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="No user found"
+            android:textColor="#01579B" />
+    </RelativeLayout>
+</LinearLayout>

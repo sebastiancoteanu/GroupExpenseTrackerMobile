@@ -116,7 +116,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
-
+            android:onClick="onPreviousPageButtonClick"
             android:gravity="center_horizontal"
             app:srcCompat="@drawable/ic_left" />
 
@@ -138,6 +138,7 @@
             android:layout_gravity="center"
             android:backgroundTint="@color/white"
             android:layout_weight="1"
+            android:onClick="onNextPageButtonClick"
             app:srcCompat="@drawable/ic_right" />
     </LinearLayout>
 
