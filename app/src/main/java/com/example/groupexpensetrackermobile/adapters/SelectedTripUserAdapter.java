@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.viewholder.SelectedUserHolder;
@@ -48,15 +49,18 @@ public class SelectedTripUserAdapter extends RecyclerView.Adapter<SelectedUserHo
         holder.setFirstNameLastName(user.getFirstName() + " " + user.getLastName());
         holder.setUserName(user.getLogin());
 
-        holder.getRemoveItemButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SelectableUser su = userList.get(position);
-                su.setSelected(false);
-                userList.remove(position);
-                SelectedTripUserAdapter.this.notifyDataSetChanged();
-            }
-        });
+        // Can't remove the user who creates the trip
+        if(user.getAppUserId() != CredentialManager.getInstance().getCurrentUser().getAppUserId()) {
+            holder.getRemoveItemButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SelectableUser su = userList.get(position);
+                    su.setSelected(false);
+                    userList.remove(position);
+                    SelectedTripUserAdapter.this.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     @Override

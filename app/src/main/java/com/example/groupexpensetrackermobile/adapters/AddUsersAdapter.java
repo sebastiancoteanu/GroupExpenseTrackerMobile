@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.viewholder.AddUserHolder;
@@ -116,18 +117,21 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUserHolder> impleme
             holder.getAddUserCheckbox().setChecked(false);
         }
 
-        holder.getAddUserCheckbox().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isChecked = ((CompoundButton) v).isChecked();
-                System.out.println("Checked state changed for index " + position + ". New state is " + isChecked);
-                if(isChecked) {
-                    user.setSelected(true);
-                } else {
-                    user.setSelected(false);
+        // Can't remove the user who creates the trip
+        if(user.getAppUserId() != CredentialManager.getInstance().getCurrentUser().getAppUserId()) {
+            holder.getAddUserCheckbox().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean isChecked = ((CompoundButton) v).isChecked();
+                    System.out.println("Checked state changed for index " + position + ". New state is " + isChecked);
+                    if (isChecked) {
+                        user.setSelected(true);
+                    } else {
+                        user.setSelected(false);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         /*holder.getAddUserCheckbox().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
