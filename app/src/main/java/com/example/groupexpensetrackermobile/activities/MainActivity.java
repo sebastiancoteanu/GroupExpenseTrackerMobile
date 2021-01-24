@@ -20,10 +20,13 @@ import com.example.groupexpensetrackermobile.adapters.TripAdapter;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.entities.User;
+import com.example.groupexpensetrackermobile.notification.GETFirebaseMessagingService;
 import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RequestService.getInstance().setContext(this);
@@ -56,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return;
         }
+
+        // Save current registration token
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GETFirebaseMessagingService.saveTokenForLoggedUser();
+            }
+        });
+        t.start();
 
         logUserStatus();
         initializeBottomNavigationBar();

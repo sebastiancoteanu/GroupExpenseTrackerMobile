@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "59227610274",
+    "project_id": "groupexpensetracker-b6f4a",
+    "storage_bucket": "groupexpensetracker-b6f4a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59227610274:android:734052dc1faabdf7888bfb",
+        "android_client_info": {
+          "package_name": "com.example.groupexpensetrackermobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "59227610274-bf4vhnoghquuj16mk6v3lsuq012emark.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4K-U3-PD66SLaRzD9veqgXxHtzwPb-zM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "59227610274-bf4vhnoghquuj16mk6v3lsuq012emark.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
