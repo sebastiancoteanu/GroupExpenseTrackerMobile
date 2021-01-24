@@ -37,8 +37,9 @@ public class HttpUtils {
         return new JsonObjectRequest(method, url, postData, responseListener, errorListener) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                String jsonString = "";
                 try {
-                    String jsonString = new String(response.data,
+                    jsonString = new String(response.data,
                             HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
 
                     JSONObject result = null;
@@ -51,7 +52,11 @@ public class HttpUtils {
                 } catch (UnsupportedEncodingException e) {
                     return Response.error(new ParseError(e));
                 } catch (JSONException je) {
-                    return Response.error(new ParseError(je));
+                    //return Response.error(new ParseError(je))
+                    HashMap<String, String> resp = new HashMap<>();
+                    resp.put("response", jsonString);
+                    return Response.success(new JSONObject(resp),
+                        HttpHeaderParser.parseCacheHeaders(response));
                 }
             }
 

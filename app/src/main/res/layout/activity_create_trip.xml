@@ -29,10 +29,9 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <EditText
-            android:id="@+id/title"
+            android:id="@+id/titleEditText"
             style="@style/modifiedEditText"
             android:hint="Title"
-            android:inputType="textPassword"
             android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -51,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/createTripTitle">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/description"
+            android:id="@+id/descriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
@@ -105,6 +104,7 @@
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/colorAccent"
         style="@style/loginButton"
+        android:onClick="onCreateButtonClicked"
         android:text="Create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
