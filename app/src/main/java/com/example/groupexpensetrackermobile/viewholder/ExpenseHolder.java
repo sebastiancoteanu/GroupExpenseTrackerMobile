@@ -27,7 +27,7 @@ public class ExpenseHolder extends RecyclerView.ViewHolder {
     }
 
     private void setAmount(Long value) {
-        this.amountTextView.setText(value.toString());
+        this.amountTextView.setText(value.toString().concat("$"));
     }
 
     public void setExpenseData(String description, Long amount) {

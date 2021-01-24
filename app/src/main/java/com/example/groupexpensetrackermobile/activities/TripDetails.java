@@ -1,6 +1,8 @@
 package com.example.groupexpensetrackermobile.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +27,8 @@ public class TripDetails extends AppCompatActivity {
     private TripExpensesAdapter tripExpensesAdapter;
     private RecyclerView tripExpensesRecyclerView;
     private List<Expense> tripExpenses = new ArrayList<>();
+    private ImageButton expensesToggle;
+    private ImageButton membersToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,23 @@ public class TripDetails extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Trip details");
         setSupportActionBar(toolbar);
+
+        expensesToggle = findViewById(R.id.expensesToggle);
+        membersToggle = findViewById(R.id.membersToggle);
+
+        expensesToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleRecyclerViewVisibility(tripExpensesRecyclerView, v, expensesToggle);
+            }
+        });
+
+        membersToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleRecyclerViewVisibility(tripMembersRecyclerView, v, membersToggle);
+            }
+        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -84,5 +105,11 @@ public class TripDetails extends AppCompatActivity {
         expensesList.add(new Expense(7, 77, "Shopping", 5, 7, ExpenseType.INDIVIDUAL));
         expensesList.add(new Expense(8, 567, "Lunch", 2, 3, ExpenseType.INDIVIDUAL));
         return expensesList;
+    }
+
+    public void toggleRecyclerViewVisibility(RecyclerView recyclerView, View v, ImageButton buttonToggle) {
+        boolean isVisible = recyclerView.getVisibility() == View.VISIBLE;
+        buttonToggle.setImageResource(isVisible ? R.drawable.ic_baseline_expand_more_24 : R.drawable.ic_baseline_expand_less_24);
+        recyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 }

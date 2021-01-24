@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.entities.User;
-import com.example.groupexpensetrackermobile.viewholder.AddUserHolder;
+import com.example.groupexpensetrackermobile.viewholder.TripMemberHolder;
 
 import java.util.List;
 
-public class TripMembersAdapter extends RecyclerView.Adapter<AddUserHolder> {
+public class TripMembersAdapter extends RecyclerView.Adapter<TripMemberHolder> {
     private List<User> membersList;
     private LayoutInflater layoutInflater;
     private final Context mContext;
@@ -26,19 +26,20 @@ public class TripMembersAdapter extends RecyclerView.Adapter<AddUserHolder> {
 
     @NonNull
     @Override
-    public AddUserHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TripMemberHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the layout view you have created for the list rows here
-        View view = layoutInflater.inflate(R.layout.add_users_card, parent, false);
-        return new AddUserHolder(view);
+        View view = layoutInflater.inflate(R.layout.member_card, parent, false);
+        return new TripMemberHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AddUserHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TripMemberHolder holder, int position) {
         final User member = membersList.get(position);
         holder.setFirstNameLastName(member.getFirstName() + " " + member.getLastName());
         holder.setUsername(member.getLogin());
+        holder.setWealth(150);
     }
 
     @Override

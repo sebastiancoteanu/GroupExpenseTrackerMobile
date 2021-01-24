@@ -30,7 +30,7 @@ public class TripExpensesAdapter extends RecyclerView.Adapter<ExpenseHolder> {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the layout view you have created for the list rows here
-        View view = layoutInflater.inflate(R.layout.add_users_card, parent, false);
+        View view = layoutInflater.inflate(R.layout.expense_item, parent, false);
         return new ExpenseHolder(view);
     }
 
