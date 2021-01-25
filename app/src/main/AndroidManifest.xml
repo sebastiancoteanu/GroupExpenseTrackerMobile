@@ -23,6 +23,10 @@
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
+        <activity
+            android:name=".activities.TripDetails"
+            android:label="TripDetailsActivity"
+            android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
         <activity android:name=".activities.MainActivity" android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

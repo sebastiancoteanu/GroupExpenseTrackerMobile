@@ -1,14 +1,19 @@
 package com.example.groupexpensetrackermobile.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.activities.MainActivity;
+import com.example.groupexpensetrackermobile.activities.TripDetails;
+import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.viewholder.TripHolder;
 
@@ -48,6 +53,16 @@ public class TripAdapter extends RecyclerView.Adapter<TripHolder> {
         holder.setTitle(contact.getTitle());
         holder.setBalance(contact.getBalance());
         holder.setCreatedDate(contact.getCreatedAt());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Long tripId = tripList.get(position).getId();
+                Intent intent = new Intent(mContext, TripDetails.class);
+                intent.putExtra("tripId", tripId);
+                mContext.startActivity(intent);
+            }
+        });
 
         // You can set click listeners to indvidual items in the viewholder here
         // make sure you pass down the listner or make the Data members of the viewHolder public
