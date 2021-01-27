@@ -21,6 +21,7 @@ import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.notification.GETFirebaseMessagingService;
+import com.example.groupexpensetrackermobile.services.LocalStorageService;
 import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
@@ -170,12 +171,14 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.action_profile:
                     if(bottomNavigationView.getSelectedItemId() != R.id.action_profile) {
-                        Toast.makeText(MainActivity.this, "Profile", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, ProfileActivity.class);
+                        startActivity(intent);
                     }
                     break;
                 case R.id.action_main:
                     if(bottomNavigationView.getSelectedItemId() != R.id.action_main) {
-                        Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
                     }
                     break;
                 case R.id.action_reports:

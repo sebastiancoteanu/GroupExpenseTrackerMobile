@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.User;
+import com.example.groupexpensetrackermobile.services.LocalStorageService;
 import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
@@ -32,7 +33,35 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+
+        boolean canLoadCredentialsFromStore = LocalStorageService.getInstance().loadCredentials();
+        if(canLoadCredentialsFromStore) {
+
+            // Do a simple request to check if the credentials are ok
+            User currentUser = CredentialManager.getInstance().getCurrentUser();
+            long userId = currentUser.getId();
+
+            Response.Listener<JSONObject> testRequestResponseListener = response -> {
+                System.out.println("Local credentials are correct");
+                goToHome(null);
+            };
+
+            Response.ErrorListener testRequestErrorListener = error -> {
+                error.printStackTrace();
+                setContentView(R.layout.activity_login);
+            };
+
+            Request request = HttpUtils.getInstance().getCustomJsonObjectRequest(
+                    Request.Method.GET,
+                    Constants.API_URL + "app-users/user/" + userId,
+                    null,
+                    testRequestResponseListener,
+                    testRequestErrorListener,
+                    CredentialManager.getInstance().getCurrentToken());
+            RequestService.getInstance().addRequest(request);
+        } else {
+            setContentView(R.layout.activity_login);
+        }
     }
 
     public void goToRegister(View v) {
@@ -46,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLogin(View v) {
-
         disableInputControls();
         JSONObject postData = null;
 
@@ -135,6 +163,8 @@ public class LoginActivity extends AppCompatActivity {
             enableInputControls();
 
             if(status) {
+                // attempt to cache the credentials
+                LocalStorageService.getInstance().storeLoggedUserCredentials();
                 goToHome(v);
                 String firstName = CredentialManager.getInstance().getCurrentUser().getFirstName();
 //                ToastHelper.getInstance().getSuccessfulMessageToast(v.getContext(), "Welcome + " + firstName + "!", Toast.LENGTH_SHORT).show();

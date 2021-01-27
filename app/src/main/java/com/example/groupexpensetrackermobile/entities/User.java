@@ -3,7 +3,9 @@ package com.example.groupexpensetrackermobile.entities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private long id;
     private long appUserId;
@@ -79,6 +81,9 @@ public class User {
             user.setEmail(json.getString("email"));
             user.setFirstName(json.getString("firstName"));
             user.setLastName(json.getString("lastName"));
+            if(json.has("appUserId")) {
+                user.setAppUserId(json.getLong("appUserId"));
+            }
             return user;
         } catch (JSONException e) {
             e.printStackTrace();

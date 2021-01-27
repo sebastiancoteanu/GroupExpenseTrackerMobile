@@ -31,6 +31,7 @@ public class CredentialManager {
     public boolean storeUser(JSONObject userJson) {
         if(currentToken == null) {
             System.err.println("Token should have been fetched until this point.");
+            return false;
         }
 
         currentUser = User.fromJsonObject(userJson);
@@ -48,6 +49,17 @@ public class CredentialManager {
             return false;
         }
         return true;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        if(currentToken == null) {
+            System.err.println("Token should have been fetched until this point.");
+        }
+        this.currentUser = currentUser;
+    }
+
+    public void setCurrentToken(String currentToken) {
+        this.currentToken = currentToken;
     }
 
     public void removeUser() {
