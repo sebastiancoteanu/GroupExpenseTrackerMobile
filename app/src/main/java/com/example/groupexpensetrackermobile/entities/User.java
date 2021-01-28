@@ -25,6 +25,14 @@ public class User implements Serializable {
         this.appUserId = appUserId;
     }
 
+    public User(long id, long appUserId, String login, String firstName, String lastName) {
+        this.id = id;
+        this.login = login;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.appUserId = appUserId;
+    }
+
     public long getAppUserId() {
         return appUserId;
     }

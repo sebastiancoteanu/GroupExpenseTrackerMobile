@@ -59,7 +59,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripHolder> {
             public void onClick(View v) {
                 Long tripId = tripList.get(position).getId();
                 Intent intent = new Intent(mContext, TripDetails.class);
-                intent.putExtra("tripId", tripId);
+                intent.putExtra("tripId", tripId.toString());
                 mContext.startActivity(intent);
             }
         });

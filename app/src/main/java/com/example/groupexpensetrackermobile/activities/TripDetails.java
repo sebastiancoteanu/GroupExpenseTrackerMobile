@@ -1,5 +1,6 @@
 package com.example.groupexpensetrackermobile.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -9,14 +10,31 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.adapters.TripAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripExpensesAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripMembersAdapter;
+import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.Expense;
 import com.example.groupexpensetrackermobile.entities.ExpenseType;
+import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.entities.User;
+import com.example.groupexpensetrackermobile.services.RequestService;
+import com.example.groupexpensetrackermobile.utilities.Constants;
+import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TripDetails extends AppCompatActivity {
@@ -59,19 +77,7 @@ public class TripDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        tripMembers = createMockedListOfUsers();
-        tripMembersAdapter = new TripMembersAdapter(tripMembers, this);
-        tripMembersRecyclerView = findViewById(R.id.membersRecycler);
-        LinearLayoutManager layoutManagerMembers = new LinearLayoutManager(this);
-        tripMembersRecyclerView.setLayoutManager(layoutManagerMembers);
-        tripMembersRecyclerView.setAdapter(tripMembersAdapter);
-
-        tripExpenses = createMockedListOfExpenses();
-        tripExpensesAdapter = new TripExpensesAdapter(tripExpenses, this);
-        tripExpensesRecyclerView = findViewById(R.id.expensesRecycler);
-        LinearLayoutManager layoutManagerExpenses = new LinearLayoutManager(this);
-        tripExpensesRecyclerView.setLayoutManager(layoutManagerExpenses);
-        tripExpensesRecyclerView.setAdapter(tripExpensesAdapter);
+        initializeTripData();
     }
 
     @Override
@@ -80,18 +86,96 @@ public class TripDetails extends AppCompatActivity {
         return true;
     }
 
-    public List<User> createMockedListOfUsers() {
+    public List<User> parseTripMembers(JSONObject response) {
         List<User> userList = new ArrayList<>();
-        userList.add(new User(1, 1, "popion", "Ion", "Popescu", "pop@ion.com"));
-        userList.add(new User(2, 2, "alexpop", "Alex", "Popescu", "pop@alex.com"));
-        userList.add(new User(3, 3, "popalex", "Alex", "Popa", "popa@alex.com"));
-        userList.add(new User(4, 4, "mihaiandrei", "Andrei", "Mihai", "ama@mama.com"));
-        userList.add(new User(5, 5, "vladdalv", "Vlad", "Coteanu", "vsc@ion.com"));
-        userList.add(new User(6, 6, "sebibest", "Sebastian", "Coteanu", "svc@ion.com"));
-        userList.add(new User(7, 7, "razvannnn", "Razvan", "Andreescu", "email@ion.com"));
-        userList.add(new User(8, 8, "georgeeee", "George", "Mitica", "g@mitica.com"));
-        userList.add(new User(9, 9, "vasileslav", "Vasile", "Vasilescu", "vv@vvv.com"));
+        try {
+            JSONArray jsonArray = response.getJSONArray("tripParticipants");
+            for(int i = 0; i < jsonArray.length(); i ++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (jsonObject == null) {
+                    continue;
+                }
+                userList.add(new User(
+                        jsonObject.getLong("id"),
+                        jsonObject.getLong("appUserId"),
+                        jsonObject.getString("login"),
+                        jsonObject.getString("firstName"),
+                        jsonObject.getString("lastName")
+                ));
+            }
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+            return userList;
+        }
         return userList;
+    }
+
+    public List<Expense> parseTripExpenses(JSONObject response) {
+        List<Expense> tripExpenses = new ArrayList<>();
+        try {
+            JSONArray jsonArray = response.getJSONArray("tripExpenses");
+            for(int i = 0; i < jsonArray.length(); i ++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (jsonObject == null) {
+                    continue;
+                }
+                tripExpenses.add(new Expense(
+                    jsonObject.getLong("id"),
+                    jsonObject.getLong("amount"),
+                    jsonObject.getString("description"),
+                    jsonObject.getLong("createdById"),
+                    jsonObject.getLong("tripId"),
+                    ExpenseType.valueOf(jsonObject.getString("type"))
+                ));
+            }
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+            return tripExpenses;
+        }
+        return tripExpenses;
+    }
+
+    public void initializeTripData() {
+        tripMembersRecyclerView = findViewById(R.id.membersRecycler);
+        LinearLayoutManager layoutManagerMembers = new LinearLayoutManager(this);
+        tripMembersRecyclerView.setLayoutManager(layoutManagerMembers);
+
+        tripExpensesRecyclerView = findViewById(R.id.expensesRecycler);
+        LinearLayoutManager layoutManagerExpenses = new LinearLayoutManager(this);
+        tripExpensesRecyclerView.setLayoutManager(layoutManagerExpenses);
+
+        Response.Listener<JSONObject> responseListener = response -> {
+            if(response != null) {
+                System.out.println("User trips fetched successful. -> " + response.length() + " trips");
+            }
+
+            tripMembers = parseTripMembers(response);
+            tripExpenses = parseTripExpenses(response);
+
+            tripMembersAdapter = new TripMembersAdapter(tripMembers, this);
+            tripMembersRecyclerView.setAdapter(tripMembersAdapter);
+
+            tripExpensesAdapter = new TripExpensesAdapter(tripExpenses, this);
+            tripExpensesRecyclerView.setAdapter(tripExpensesAdapter);
+        };
+
+        Response.ErrorListener errorListener =  error -> {
+            error.printStackTrace();
+        };
+
+        String tripId = getIntent().getStringExtra("tripId");
+        JsonObjectRequest jsonObjectRequest = HttpUtils.getInstance().getCustomJsonObjectRequest(
+                Request.Method.GET,
+                Constants.API_URL + "custom/trips/trip-details/" + tripId,
+                null,
+                responseListener,
+                errorListener,
+                CredentialManager.getInstance().getCurrentToken()
+        );
+
+        RequestService.getInstance().addRequest(jsonObjectRequest);
     }
 
     public List<Expense> createMockedListOfExpenses() {
