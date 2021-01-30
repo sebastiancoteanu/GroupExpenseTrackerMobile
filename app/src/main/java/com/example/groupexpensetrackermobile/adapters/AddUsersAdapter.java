@@ -35,6 +35,15 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUserHolder> impleme
         this.currentUserList = new ArrayList<>();
         this.mContext = context;
     }
+    public AddUsersAdapter(List<SelectableUser> originalUserList, Context context, boolean performFiltering) {
+        this.originalUserList = originalUserList;
+        this.currentUserList = new ArrayList<>();
+        this.mContext = context;
+        if(!performFiltering) {
+            currentUserList = originalUserList;
+        }
+    }
+
 
     public List<SelectableUser> getOriginalUserList() {
         return originalUserList;

@@ -1,12 +1,22 @@
 package com.example.groupexpensetrackermobile.activities;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,12 +25,14 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.adapters.AddUsersAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripExpensesAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripMembersAdapter;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.Expense;
 import com.example.groupexpensetrackermobile.entities.ExpenseType;
+import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.services.RequestService;
@@ -36,6 +48,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TripDetails extends AppCompatActivity {
     private TripMembersAdapter tripMembersAdapter;
@@ -47,6 +60,12 @@ public class TripDetails extends AppCompatActivity {
     private List<Expense> tripExpenses = new ArrayList<>();
     private ImageButton expensesToggle;
     private ImageButton membersToggle;
+
+    public static AlertDialog.Builder builder;
+    public static AlertDialog ad;
+    private AddUsersAdapter selectExpenseParticipantsAdapter;
+    private List<SelectableUser> expensePartcipants;
+    private RecyclerView expenseParticipantsRecycleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +178,21 @@ public class TripDetails extends AppCompatActivity {
 
             tripExpensesAdapter = new TripExpensesAdapter(tripExpenses, this);
             tripExpensesRecyclerView.setAdapter(tripExpensesAdapter);
+
+            TextView tripNameTV = findViewById(R.id.tripDetails_tripName);
+            try {
+                tripNameTV.setText(response.getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            TextView tripDetailsTV = findViewById(R.id.tripDetails_tripDescription);
+            try {
+                tripDetailsTV.setText(response.getString("description"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         };
 
         Response.ErrorListener errorListener =  error -> {
@@ -196,4 +230,57 @@ public class TripDetails extends AppCompatActivity {
         buttonToggle.setImageResource(isVisible ? R.drawable.ic_baseline_expand_more_24 : R.drawable.ic_baseline_expand_less_24);
         recyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
+
+    @SuppressLint("NewApi")
+    public void createExpense(View v) {
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.add_expense, null);
+
+
+        builder = new AlertDialog.Builder(v.getContext(), AlertDialog.THEME_HOLO_LIGHT);
+        builder.setView(popupView);
+        ad = builder.show();
+
+        expensePartcipants = tripMembers.stream().map(SelectableUser::new).collect(Collectors.toList());
+        for(SelectableUser selectableUser : expensePartcipants) {
+            if(selectableUser.getLogin().equals(CredentialManager.getInstance().getCurrentUser().getLogin())) {
+                selectableUser.setSelected(true);
+            }
+        }
+
+        selectExpenseParticipantsAdapter = new AddUsersAdapter(expensePartcipants, popupView.getContext(), false);
+        expenseParticipantsRecycleView = popupView.findViewById(R.id.addExpense_expenseParticipants);
+        expenseParticipantsRecycleView.setVisibility(View.INVISIBLE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(popupView.getContext());
+        expenseParticipantsRecycleView.setLayoutManager(layoutManager);
+        expenseParticipantsRecycleView.setAdapter(selectExpenseParticipantsAdapter);
+
+        RadioGroup radioGroup = popupView.findViewById(R.id.addExpense_expenseType);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.addExpense_groupRadio) {
+                    expenseParticipantsRecycleView.setVisibility(View.VISIBLE);
+                } else {
+                    for(SelectableUser selectableUser : expensePartcipants) {
+                        expenseParticipantsRecycleView.setVisibility(View.INVISIBLE);
+                        if(!selectableUser.getLogin().equals(CredentialManager.getInstance().getCurrentUser().getLogin())) {
+                            selectableUser.setSelected(false);
+                        }
+                        selectExpenseParticipantsAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+
+
+
+    }
+
+    public void addTripMember(View v) {}
+
+    public void addExpense_createExpense(View v) {}
 }

@@ -9,6 +9,11 @@ public class SelectableUser extends User {
         this.isSelected = isSelected;
     }
 
+    public SelectableUser(User user) {
+        super(user.getId(), user.getAppUserId(), user.getLogin(), user.getFirstName(), user.getLastName(), user.getEmail());
+        this.isSelected = false;
+    }
+
     public boolean isSelected() {
         return isSelected;
     }
