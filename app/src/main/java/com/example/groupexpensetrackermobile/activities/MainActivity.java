@@ -21,13 +21,10 @@ import com.example.groupexpensetrackermobile.config.CredentialManager;
 import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.notification.GETFirebaseMessagingService;
-import com.example.groupexpensetrackermobile.services.LocalStorageService;
 import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         RequestService.getInstance().addRequest(jsonArrayRequest);
+
     }
 
     public void onPreviousPageButtonClick(View v) {
@@ -217,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                         jsonObject.getString("name"),
                         jsonObject.getString("description"),
                         date,
-                        BigDecimal.TEN));
+                        BigDecimal.valueOf(jsonObject.getDouble("balance"))));
             }
         } catch (JSONException e)
         {

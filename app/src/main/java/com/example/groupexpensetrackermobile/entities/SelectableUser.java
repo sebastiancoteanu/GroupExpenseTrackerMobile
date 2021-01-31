@@ -10,7 +10,7 @@ public class SelectableUser extends User {
     }
 
     public SelectableUser(User user) {
-        super(user.getId(), user.getAppUserId(), user.getLogin(), user.getFirstName(), user.getLastName(), user.getEmail());
+        super(user.getId(), user.getAppUserId(), user.getLogin(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getBalance());
         this.isSelected = false;
     }
 

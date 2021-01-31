@@ -4,6 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class User implements Serializable {
 
@@ -13,8 +15,19 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private BigDecimal balance;
 
     private User() {};
+
+    public User(long id, long appUserId, String login, String firstName, String lastName, String email, BigDecimal balance) {
+        this.id = id;
+        this.appUserId = appUserId;
+        this.login = login;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.balance = balance;
+    }
 
     public User(long id, long appUserId, String login, String firstName, String lastName, String email) {
         this.id = id;
@@ -31,6 +44,14 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.appUserId = appUserId;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public long getAppUserId() {
@@ -109,5 +130,19 @@ public class User implements Serializable {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                appUserId == user.appUserId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, appUserId);
     }
 }

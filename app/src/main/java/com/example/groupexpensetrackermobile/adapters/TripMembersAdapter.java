@@ -1,5 +1,6 @@
 package com.example.groupexpensetrackermobile.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
+import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.User;
 import com.example.groupexpensetrackermobile.viewholder.TripMemberHolder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TripMembersAdapter extends RecyclerView.Adapter<TripMemberHolder> {
     private List<User> membersList;
@@ -22,6 +25,11 @@ public class TripMembersAdapter extends RecyclerView.Adapter<TripMemberHolder> {
     public TripMembersAdapter(List<User> membersList, Context context) {
         this.membersList = membersList;
         this.mContext = context;
+    }
+
+    @SuppressLint("NewApi")
+    public void setMembersList(List<SelectableUser> membersList) {
+        this.membersList = membersList.stream().map(p -> (SelectableUser) p).collect(Collectors.toList());
     }
 
     @NonNull
@@ -39,7 +47,7 @@ public class TripMembersAdapter extends RecyclerView.Adapter<TripMemberHolder> {
         final User member = membersList.get(position);
         holder.setFirstNameLastName(member.getFirstName() + " " + member.getLastName());
         holder.setUsername(member.getLogin());
-        holder.setWealth(150);
+        holder.setWealth(member.getBalance());
     }
 
     @Override

@@ -20,7 +20,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/expensesRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_marginStart="24dp"
         android:scrollbars="vertical"
         android:layout_marginTop="8dp"
@@ -56,8 +56,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/membersRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxHeight="350dp"
+        android:layout_height="200dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
@@ -111,12 +110,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.example.groupexpensetrackermobile.customcomponents.MultiSpinnerSearch
         android:id="@+id/addMemberFloatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="Add member"
-        android:onClick="addTripMember"
         android:paddingTop="5dp"
         android:scaleX="0.5"
         android:scaleY="0.5"

@@ -64,7 +64,6 @@ public class CreateTrip extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         MultiSpinnerSearch multiSelectSpinnerWithSearch = findViewById(R.id.multipleItemSelectionSpinner);
-        multiSelectSpinnerWithSearch.setSpinnerText("Add users...");
         multiSelectSpinnerWithSearch.setSearchHint("Type at least 3 characters...");
 
         disableInputMethods();

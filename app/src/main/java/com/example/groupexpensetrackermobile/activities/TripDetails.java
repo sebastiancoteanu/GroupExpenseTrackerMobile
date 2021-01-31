@@ -2,18 +2,24 @@ package com.example.groupexpensetrackermobile.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,18 +32,22 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.adapters.AddUsersAdapter;
+import com.example.groupexpensetrackermobile.adapters.SelectedTripUserAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripExpensesAdapter;
 import com.example.groupexpensetrackermobile.adapters.TripMembersAdapter;
 import com.example.groupexpensetrackermobile.config.CredentialManager;
+import com.example.groupexpensetrackermobile.customcomponents.MultiSpinnerSearch;
 import com.example.groupexpensetrackermobile.entities.Expense;
 import com.example.groupexpensetrackermobile.entities.ExpenseType;
 import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.entities.Trip;
 import com.example.groupexpensetrackermobile.entities.User;
+import com.example.groupexpensetrackermobile.listeners.MultiSpinnerListener;
 import com.example.groupexpensetrackermobile.services.RequestService;
 import com.example.groupexpensetrackermobile.utilities.Constants;
 import com.example.groupexpensetrackermobile.utilities.HttpUtils;
+import com.example.groupexpensetrackermobile.utilities.ToastHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +63,8 @@ import java.util.stream.Collectors;
 public class TripDetails extends AppCompatActivity {
     private TripMembersAdapter tripMembersAdapter;
     private RecyclerView tripMembersRecyclerView;
-    private List<User> tripMembers = new ArrayList<>();
+    private List<SelectableUser> tripMembers = new ArrayList<>();
+    private List<SelectableUser> tripMembersCandidates = new ArrayList<>();
 
     private TripExpensesAdapter tripExpensesAdapter;
     private RecyclerView tripExpensesRecyclerView;
@@ -97,6 +108,7 @@ public class TripDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initializeTripData();
+        initializeUserDialog();
     }
 
     @Override
@@ -105,8 +117,8 @@ public class TripDetails extends AppCompatActivity {
         return true;
     }
 
-    public List<User> parseTripMembers(JSONObject response) {
-        List<User> userList = new ArrayList<>();
+    public List<SelectableUser> parseTripMembers(JSONObject response) {
+        List<SelectableUser> userList = new ArrayList<>();
         try {
             JSONArray jsonArray = response.getJSONArray("tripParticipants");
             for(int i = 0; i < jsonArray.length(); i ++) {
@@ -114,13 +126,20 @@ public class TripDetails extends AppCompatActivity {
                 if (jsonObject == null) {
                     continue;
                 }
-                userList.add(new User(
+                User user = new User(
                         jsonObject.getLong("id"),
                         jsonObject.getLong("appUserId"),
                         jsonObject.getString("login"),
                         jsonObject.getString("firstName"),
-                        jsonObject.getString("lastName")
-                ));
+                        jsonObject.getString("lastName"),
+                        ""
+                );
+                user.setBalance(BigDecimal.valueOf(jsonObject.getDouble("balanceForTrip")));
+                SelectableUser su = new SelectableUser(user);
+                if(su.getAppUserId() == CredentialManager.getInstance().getCurrentUser().getAppUserId()) {
+                    su.setSelected(true);
+                }
+                userList.add(su);
             }
         } catch (JSONException e)
         {
@@ -156,6 +175,7 @@ public class TripDetails extends AppCompatActivity {
         return tripExpenses;
     }
 
+    @SuppressLint("NewApi")
     public void initializeTripData() {
         tripMembersRecyclerView = findViewById(R.id.membersRecycler);
         LinearLayoutManager layoutManagerMembers = new LinearLayoutManager(this);
@@ -165,7 +185,7 @@ public class TripDetails extends AppCompatActivity {
         LinearLayoutManager layoutManagerExpenses = new LinearLayoutManager(this);
         tripExpensesRecyclerView.setLayoutManager(layoutManagerExpenses);
 
-        Response.Listener<JSONObject> responseListener = response -> {
+         Response.Listener<JSONObject> responseListener = response -> {
             if(response != null) {
                 System.out.println("User trips fetched successful. -> " + response.length() + " trips");
             }
@@ -173,7 +193,7 @@ public class TripDetails extends AppCompatActivity {
             tripMembers = parseTripMembers(response);
             tripExpenses = parseTripExpenses(response);
 
-            tripMembersAdapter = new TripMembersAdapter(tripMembers, this);
+            tripMembersAdapter = new TripMembersAdapter(tripMembers.stream().map(p -> (User) p).collect(Collectors.toList()), this);
             tripMembersRecyclerView.setAdapter(tripMembersAdapter);
 
             tripExpensesAdapter = new TripExpensesAdapter(tripExpenses, this);
@@ -212,19 +232,6 @@ public class TripDetails extends AppCompatActivity {
         RequestService.getInstance().addRequest(jsonObjectRequest);
     }
 
-    public List<Expense> createMockedListOfExpenses() {
-        List<Expense> expensesList = new ArrayList<>();
-        expensesList.add(new Expense(1, 25, "Lunch", 2, 4, ExpenseType.INDIVIDUAL));
-        expensesList.add(new Expense(2, 122, "Brunch", 3, 2, ExpenseType.GROUP));
-        expensesList.add(new Expense(3, 343, "Dinner", 1, 3, ExpenseType.INDIVIDUAL));
-        expensesList.add(new Expense(4, 122, "Shopping", 4, 1, ExpenseType.GROUP));
-        expensesList.add(new Expense(5, 222, "Lunch", 6, 4, ExpenseType.GROUP));
-        expensesList.add(new Expense(6, 122, "Shopping", 3, 5, ExpenseType.INDIVIDUAL));
-        expensesList.add(new Expense(7, 77, "Shopping", 5, 7, ExpenseType.INDIVIDUAL));
-        expensesList.add(new Expense(8, 567, "Lunch", 2, 3, ExpenseType.INDIVIDUAL));
-        return expensesList;
-    }
-
     public void toggleRecyclerViewVisibility(RecyclerView recyclerView, View v, ImageButton buttonToggle) {
         boolean isVisible = recyclerView.getVisibility() == View.VISIBLE;
         buttonToggle.setImageResource(isVisible ? R.drawable.ic_baseline_expand_more_24 : R.drawable.ic_baseline_expand_less_24);
@@ -237,18 +244,39 @@ public class TripDetails extends AppCompatActivity {
                 getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.add_expense, null);
 
-
-        builder = new AlertDialog.Builder(v.getContext(), AlertDialog.THEME_HOLO_LIGHT);
+        builder = new AlertDialog.Builder(v.getContext());
         builder.setView(popupView);
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            TextView nameTv = popupView.findViewById(R.id.addExpense_expenseNameEdit);
+            String expenseName = nameTv.getText().toString();
+
+            TextView amountTv = popupView.findViewById(R.id.addExpense_expenseAmountEdit);
+            double amount = Double.parseDouble(amountTv.getText().toString());
+
+            RadioButton groupRadioButton = popupView.findViewById(R.id.addExpense_groupRadio);
+            int type = 0;
+            if(groupRadioButton.isChecked()) {
+                type = 1;
+            }
+
+            addExpense_createExpense(expenseName, amount, type);
+
+        });
+
         ad = builder.show();
+
+        Button positiveButton = ad.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setBackgroundColor(Color.WHITE);
+        positiveButton.setTextColor(Color.rgb(1, 87, 155));
+        positiveButton.setGravity(Gravity.END);
 
         expensePartcipants = tripMembers.stream().map(SelectableUser::new).collect(Collectors.toList());
         for(SelectableUser selectableUser : expensePartcipants) {
-            if(selectableUser.getLogin().equals(CredentialManager.getInstance().getCurrentUser().getLogin())) {
+            if(selectableUser.getAppUserId() == CredentialManager.getInstance().getCurrentUser().getAppUserId()) {
                 selectableUser.setSelected(true);
             }
         }
-
         selectExpenseParticipantsAdapter = new AddUsersAdapter(expensePartcipants, popupView.getContext(), false);
         expenseParticipantsRecycleView = popupView.findViewById(R.id.addExpense_expenseParticipants);
         expenseParticipantsRecycleView.setVisibility(View.INVISIBLE);
@@ -264,8 +292,8 @@ public class TripDetails extends AppCompatActivity {
                 if(checkedId == R.id.addExpense_groupRadio) {
                     expenseParticipantsRecycleView.setVisibility(View.VISIBLE);
                 } else {
+                    expenseParticipantsRecycleView.setVisibility(View.INVISIBLE);
                     for(SelectableUser selectableUser : expensePartcipants) {
-                        expenseParticipantsRecycleView.setVisibility(View.INVISIBLE);
                         if(!selectableUser.getLogin().equals(CredentialManager.getInstance().getCurrentUser().getLogin())) {
                             selectableUser.setSelected(false);
                         }
@@ -275,12 +303,183 @@ public class TripDetails extends AppCompatActivity {
             }
         });
 
+    }
 
+    private void initializeUserDialog() {
+        MultiSpinnerSearch multiSelectSpinnerWithSearch = findViewById(R.id.addMemberFloatingButton);
+        multiSelectSpinnerWithSearch.setEnabled(false);
+        multiSelectSpinnerWithSearch.setSearchHint("Type at least 3 characters...");
+        multiSelectSpinnerWithSearch.setOnCancel(new Runnable() {
+            @Override
+            public void run() {
 
+            }
+        });
+
+        Response.Listener<JSONArray> responseListener = response -> {
+            if(response != null) {
+                System.out.println("Selectable users fetched successful. -> " + response.length() + " users");
+            }
+            tripMembersCandidates = parseSelectableUsers(response);
+
+            for(SelectableUser selectableUser : tripMembersCandidates) {
+                if(tripMembers.contains(selectableUser)) {
+                    selectableUser.setSelected(true);
+                }
+            }
+
+            multiSelectSpinnerWithSearch.setItems(tripMembersCandidates, new MultiSpinnerListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onSelectionEnd() {
+                    updateTripMembers();
+                }
+            });
+
+            multiSelectSpinnerWithSearch.setEnabled(true);
+        };
+
+        Response.ErrorListener errorListener =  error -> {
+            error.printStackTrace();
+        };
+
+        JsonArrayRequest jsonArrayRequest = HttpUtils.getInstance().getCustomJsonArrayRequest(
+                Request.Method.GET,
+                Constants.API_URL + "custom/candidates/" + CredentialManager.getInstance().getCurrentUser().getAppUserId(),
+                null,
+                responseListener,
+                errorListener,
+                CredentialManager.getInstance().getCurrentToken()
+        );
+
+        RequestService.getInstance().addRequest(jsonArrayRequest);
+    }
+
+    private List<SelectableUser> parseSelectableUsers(JSONArray jsonArray) {
+        List<SelectableUser> selectableUsers = new ArrayList<>();
+
+        if(jsonArray == null) {
+            return selectableUsers;
+        }
+
+        try {
+            for(int i = 0; i < jsonArray.length(); i ++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if(jsonObject == null) {
+                    continue;
+                }
+
+                long appUserId = jsonObject.getLong("appUserId");
+                selectableUsers.add(new SelectableUser(
+                        jsonObject.getLong("id"),
+                        appUserId,
+                        jsonObject.getString("login"),
+                        jsonObject.getString("firstName"),
+                        jsonObject.getString("lastName"),
+                        "",
+                        appUserId == CredentialManager.getInstance().getCurrentUser().getAppUserId()));
+            }
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+            return selectableUsers;
+        }
+
+        return selectableUsers;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void updateTripMembers() {
+        long tripId = Long.parseLong(getIntent().getStringExtra("tripId"));
+        long[] participantsAppUserId = tripMembersCandidates.stream().filter(SelectableUser::isSelected).mapToLong(User::getAppUserId).toArray();
+        if(participantsAppUserId == null) {
+            participantsAppUserId = new long[]{};
+        }
+
+        JSONArray postData = new JSONArray();
+        for(int i = 0; i < participantsAppUserId.length; i++) {
+            postData.put(JSONObject.wrap(participantsAppUserId[i]));
+        }
+        System.out.println(postData.toString());
+
+        Response.Listener<JSONArray> responseListener = response -> {
+            //ad.cancel();
+            ToastHelper.getInstance().getSuccessfulMessageToast(this, "Trip members updated", Toast.LENGTH_SHORT).show();
+            reloadCurrentTripDetails();
+        };
+
+        Response.ErrorListener errorListener = error -> {
+            System.out.println(error.getMessage());
+            error.printStackTrace();
+            ToastHelper.getInstance().getErrorMessageToast(this, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
+        };
+
+        JsonArrayRequest jsonObjectRequest = HttpUtils.getInstance().getCustomJsonArrayRequest(
+                Request.Method.PUT,
+                Constants.API_URL + "custom/update-trip-participants/" + tripId,
+                postData,
+                responseListener,
+                errorListener,
+                CredentialManager.getInstance().getCurrentToken()
+        );
+
+        RequestService.getInstance().addRequest(jsonObjectRequest);
 
     }
 
-    public void addTripMember(View v) {}
+    @SuppressLint("NewApi")
+    public void addExpense_createExpense(String expenseName, double amount, int type) {
+        long createdBy = CredentialManager.getInstance().getCurrentUser().getAppUserId();
+        long tripId = Long.parseLong(getIntent().getStringExtra("tripId"));
 
-    public void addExpense_createExpense(View v) {}
+        long[] participantsAppUserId = expensePartcipants.stream().mapToLong(User::getAppUserId).toArray();
+        if(participantsAppUserId == null) {
+            participantsAppUserId = new long[]{};
+        }
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("description", expenseName);
+            postData.put("createdBy", createdBy);
+            postData.put("tripId", tripId);
+            postData.put("amount", amount);
+            postData.put("expenseType", type == 0 ? "INDIVIDUAL" : "GROUP");
+            postData.put("participantsAppUserId", JSONObject.wrap(participantsAppUserId));
+            System.out.println(postData.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            ToastHelper.getInstance().getErrorMessageToast(this, "Invalid values", Toast.LENGTH_SHORT).show();
+        }
+
+        Response.Listener<JSONObject> responseListener = response -> {
+            ad.cancel();
+            ToastHelper.getInstance().getSuccessfulMessageToast(this, "Expense created", Toast.LENGTH_SHORT).show();
+            reloadCurrentTripDetails();
+        };
+
+        Response.ErrorListener errorListener = error -> {
+            System.out.println(error.getMessage());
+            error.printStackTrace();
+            ToastHelper.getInstance().getErrorMessageToast(this, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
+        };
+
+        JsonObjectRequest jsonObjectRequest = HttpUtils.getInstance().getCustomJsonObjectRequest(
+                Request.Method.POST,
+                Constants.API_URL + "custom/create-expense",
+                postData,
+                responseListener,
+                errorListener,
+                CredentialManager.getInstance().getCurrentToken()
+        );
+
+        RequestService.getInstance().addRequest(jsonObjectRequest);
+    }
+
+    public void reloadCurrentTripDetails() {
+        Intent intent = new Intent(this, TripDetails.class);
+        intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        String tripId = getIntent().getStringExtra("tripId");
+        intent.putExtra("tripId", tripId.toString());
+        this.startActivity(intent);
+    }
 }

@@ -26,13 +26,14 @@ import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.adapters.AddUsersAdapter;
 import com.example.groupexpensetrackermobile.entities.SelectableUser;
 import com.example.groupexpensetrackermobile.listeners.MultiSpinnerListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.jar.Attributes;
 
-public class MultiSpinnerSearch extends AppCompatSpinner implements DialogInterface.OnCancelListener {
+public class MultiSpinnerSearch extends FloatingActionButton implements DialogInterface.OnCancelListener {
 
     public static AlertDialog.Builder builder;
     public static AlertDialog ad;
@@ -45,6 +46,7 @@ public class MultiSpinnerSearch extends AppCompatSpinner implements DialogInterf
     private String spinnerTitle = "Add users";
     private String searchHint = "Type to search";
     private String clearText = "Clear All";
+    private Runnable onCancel = null;
 
     private MultiSpinnerListener listener;
 
@@ -67,10 +69,10 @@ public class MultiSpinnerSearch extends AppCompatSpinner implements DialogInterf
         this.spinnerTitle = spinnerTitle;
     }
 
-    public void setSpinnerText(String spinnerText) {
+    /*public void setSpinnerText(String spinnerText) {
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(getContext(), R.layout.text_view_for_spinner, new String[]{ spinnerText });
         setAdapter(adapterSpinner);
-    }
+    }*/
 
     public List<SelectableUser> getSelectedItems() {
         List<SelectableUser> selectedItems = new ArrayList<>();
@@ -95,17 +97,26 @@ public class MultiSpinnerSearch extends AppCompatSpinner implements DialogInterf
     @Override
     public void onCancel(DialogInterface dialog) {
 
-        /**
-         * To hide dropdown which is already opened at the time of performClick...
-         * This code will hide automatically and no need to tap by user.
-         */
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Instrumentation inst = new Instrumentation();
-                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-            }
-        }).start();
+        if(onCancel == null) {
+            /**
+             * To hide dropdown which is already opened at the time of performClick...
+             * This code will hide automatically and no need to tap by user.
+             */
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                }
+            }).start();
+        } else {
+            new Thread(onCancel).start();
+        }
+
+    }
+
+    public void setOnCancel(Runnable onCancel) {
+        this.onCancel = onCancel;
     }
 
     @Override

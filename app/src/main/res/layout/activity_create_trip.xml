@@ -72,15 +72,28 @@
             android:id="@+id/selectedUsersLabel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="Selected users"
             android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/addUserLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="Add users"
+            android:layout_weight="0"/>
+
         <com.example.groupexpensetrackermobile.customcomponents.MultiSpinnerSearch
             android:id="@+id/multipleItemSelectionSpinner"
             android:layout_width="125dp"
             android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
             android:textColor="#01579B"
-
-            android:layout_alignParentRight="true"/>
+            app:backgroundTint="#FFFFFF"
+            app:srcCompat="@drawable/ic_baseline_add_24"
+            app:tint="@color/colorAccent" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
