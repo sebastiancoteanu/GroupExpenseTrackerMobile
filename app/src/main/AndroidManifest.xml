@@ -31,6 +31,10 @@
             android:name=".activities.ProfileActivity"
             android:label="ProfileActivity"
             android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
+        <activity
+            android:name=".activities.HowToActivity"
+            android:label="HowToActivity"
+            android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar" />
         <activity android:name=".activities.MainActivity" android:theme="@style/Theme.GroupExpenseTrackerMobile.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

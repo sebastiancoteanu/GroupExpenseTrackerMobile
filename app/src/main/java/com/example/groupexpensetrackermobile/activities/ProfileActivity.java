@@ -76,9 +76,10 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     break;
-                case R.id.action_reports:
-                    if(bottomNavigationView.getSelectedItemId() != R.id.action_reports) {
-                        Toast.makeText(ProfileActivity.this, "Reports", Toast.LENGTH_SHORT).show();
+                case R.id.action_how_to:
+                    if(bottomNavigationView.getSelectedItemId() != R.id.action_how_to) {
+                        Intent intent = new Intent(this, HowToActivity.class);
+                        startActivity(intent);
                     }
                     break;
             }
