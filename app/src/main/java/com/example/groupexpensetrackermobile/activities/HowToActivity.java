@@ -44,7 +44,7 @@ public class HowToActivity extends AppCompatActivity {
 
     private void initializeBottomNavigationBar() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.action_main);
+        bottomNavigationView.setSelectedItemId(R.id.action_how_to);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_profile:

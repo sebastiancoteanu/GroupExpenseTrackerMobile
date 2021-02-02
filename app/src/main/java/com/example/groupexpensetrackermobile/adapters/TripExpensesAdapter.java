@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupexpensetrackermobile.R;
 import com.example.groupexpensetrackermobile.entities.Expense;
+import com.example.groupexpensetrackermobile.listeners.OnItemClickListener;
 import com.example.groupexpensetrackermobile.viewholder.ExpenseHolder;
 
 import java.util.List;
@@ -18,10 +19,12 @@ public class TripExpensesAdapter extends RecyclerView.Adapter<ExpenseHolder> {
     private List<Expense> expenses;
     private LayoutInflater layoutInflater;
     private final Context mContext;
+    private OnItemClickListener onItemClickListener;
 
-    public TripExpensesAdapter(List<Expense> expenses, Context context) {
+    public TripExpensesAdapter(List<Expense> expenses, Context context, OnItemClickListener onItemClickListener) {
         this.expenses = expenses;
         this.mContext = context;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -38,6 +41,14 @@ public class TripExpensesAdapter extends RecyclerView.Adapter<ExpenseHolder> {
     public void onBindViewHolder(@NonNull ExpenseHolder holder, int position) {
         final Expense expense = expenses.get(position);
         holder.setExpenseData(expense.getDescription(), expense.getAmount());
+        if(onItemClickListener != null) {
+            holder.getDescriptionTextView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemLongClick(expense.getId());
+                }
+            });
+        }
     }
 
     @Override

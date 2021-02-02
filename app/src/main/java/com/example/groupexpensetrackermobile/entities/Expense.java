@@ -8,6 +8,9 @@ public class Expense {
     private long tripId;
     private ExpenseType type;
 
+    public Expense() {
+    }
+
     public Expense(long id, long amount, String description, long createdById, long tripId, ExpenseType type) {
         this.id = id;
         this.amount = amount;

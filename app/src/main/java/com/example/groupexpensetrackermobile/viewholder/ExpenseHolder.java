@@ -34,4 +34,8 @@ public class ExpenseHolder extends RecyclerView.ViewHolder {
         setDescription(description);
         setAmount(amount);
     }
+
+    public TextView getDescriptionTextView() {
+        return descriptionTextView;
+    }
 }
