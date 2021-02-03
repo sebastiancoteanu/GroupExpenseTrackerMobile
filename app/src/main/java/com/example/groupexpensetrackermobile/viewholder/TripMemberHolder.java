@@ -40,7 +40,7 @@ public class TripMemberHolder extends RecyclerView.ViewHolder {
         } else {
             wealth.setTextColor(Color.rgb(0, 110, 26));
         }
-        wealth.setText(balance.setScale(2).toString() + "$");
+        wealth.setText(balance.intValue() + "$");
     }
 
     public void setUsername(String value) {

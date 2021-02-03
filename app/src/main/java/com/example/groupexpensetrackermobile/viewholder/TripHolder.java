@@ -41,6 +41,6 @@ public class TripHolder extends RecyclerView.ViewHolder {
         } else {
             txtBalance.setTextColor(Color.rgb(0, 110, 26));
         }
-        txtBalance.setText(balance.setScale(2).toString() + "$");
+        txtBalance.setText(balance.intValue() + "$");
     }
 }

@@ -626,7 +626,7 @@ public class TripDetails extends AppCompatActivity {
     @SuppressLint("NewApi")
     public void addExpense_updateExpense(Long expenseId, String expenseName, double amount, int type) {
 
-        long[] participantsAppUserId = expensePartcipants.stream().mapToLong(User::getAppUserId).toArray();
+        long[] participantsAppUserId = expensePartcipants.stream().filter(p->p.isSelected()).mapToLong(User::getAppUserId).toArray();
         if(participantsAppUserId == null) {
             participantsAppUserId = new long[]{};
         }
@@ -673,7 +673,7 @@ public class TripDetails extends AppCompatActivity {
         long createdBy = CredentialManager.getInstance().getCurrentUser().getAppUserId();
         long tripId = Long.parseLong(getIntent().getStringExtra("tripId"));
 
-        long[] participantsAppUserId = expensePartcipants.stream().mapToLong(User::getAppUserId).toArray();
+        long[] participantsAppUserId = expensePartcipants.stream().filter(p->p.isSelected()).mapToLong(User::getAppUserId).toArray();
         if(participantsAppUserId == null) {
             participantsAppUserId = new long[]{};
         }
